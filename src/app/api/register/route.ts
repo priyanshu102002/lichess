@@ -27,7 +27,11 @@ export async function POST(req: Request) {
 
         await newUser.save();
         return NextResponse.json({ message: "User registered successfully" }, { status: 201 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ error: error.message }, { status: 400 });
+        }
+        // Handle unexpected error types
+        return NextResponse.json({ error: "An unexpected error occurred" }, { status: 500 });
     }
 }
